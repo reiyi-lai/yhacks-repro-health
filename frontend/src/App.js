@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import { ChatContextProvider } from './context/chatContext';
+// import SideBar from './components/SideBar';
+// import ChatView from './components/ChatView';
+import { React, useEffect, useState } from 'react';
+import Modal from './components/Modal';
+import Setting from './components/Setting';
 
-function App() {
+// import Navigation from "./components/Navigation/Navigation.jsx";
+// import Chat from "./components/Chat/Chat.jsx";
+// import Feedback from "./components/Feedback/Feedback.jsx";
+// import "./App.css";
+
+const App = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    const apiKey = window.localStorage.getItem('api-key');
+    if (!apiKey) {
+      setModalOpen(true);
+    }
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ChatContextProvider>
+      <Modal title="Setting" modalOpen={modalOpen} setModalOpen={setModalOpen}>
+        <Setting modalOpen={modalOpen} setModalOpen={setModalOpen} />
+      </Modal>
+      <div className="flex transition duration-500 ease-in-out">
+        <SideBar />
+        <ChatView />
+      </div>
+    </ChatContextProvider>
   );
-}
+};
 
 export default App;

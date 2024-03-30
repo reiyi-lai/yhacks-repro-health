@@ -1,14 +1,14 @@
 import { ChatContextProvider } from './context/chatContext';
-// import SideBar from './components/SideBar';
-// import ChatView from './components/ChatView';
+import SideBar from './components/SideBar';
+import ChatView from './components/ChatView';
 import { React, useEffect, useState } from 'react';
 import Modal from './components/Modal';
 import Setting from './components/Setting';
 
-// import Navigation from "./components/Navigation/Navigation.jsx";
-// import Chat from "./components/Chat/Chat.jsx";
-// import Feedback from "./components/Feedback/Feedback.jsx";
-// import "./App.css";
+import Navigation from "./components/Navigation/Navigation.jsx";
+import Chat from "./components/Chat/Chat.jsx";
+import Feedback from "./components/Feedback/Feedback.jsx";
+import "./App.css";
 
 const App = () => {
   const [modalOpen, setModalOpen] = useState(false);

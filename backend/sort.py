@@ -20,4 +20,3 @@ with open('./data/symptoms.csv', mode='r') as csvfile:
 
 #print("Diseases:", diseasesList)
 #print("Symptoms List:", symptomsList)
-

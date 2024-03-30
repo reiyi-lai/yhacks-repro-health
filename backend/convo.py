@@ -24,7 +24,7 @@ def main():
     print("How are you feeling today?")
     while True:
         user_input = input("User: ").strip()
-        if user_input.lower() in ['exit', 'quit', 'stop', 'good', 'great']:
+        if user_input.lower() in ['exit', 'quit', 'stop', 'good', 'great', 'bye']:
             print("AI: Take care! If you have any more concerns, feel free to talk to me.")
             break
 

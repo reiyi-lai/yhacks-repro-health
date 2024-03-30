@@ -3,12 +3,7 @@
   "version": "0.1.0",
   "private": true,
 },
-
   "dependencies": {
-    "bad-words": "^3.0.4",
-    "daisyui": "^2.51.6",
-    "moment": "^2.29.4",
-    "openai": "^3.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-ga4": "^2.1.0",
@@ -17,7 +12,10 @@
     "react-scripts": "5.0.1",
     "react-syntax-highlighter": "^15.5.0",
     "react-tooltip": "^5.16.1",
-    "remark-gfm": "^3.0.1"
+    "remark-gfm": "^3.0.1",
+    "bad-words": "^3.0.4",
+    "daisyui": "^2.51.6",
+    "moment": "^2.29.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -103,4 +101,3 @@
       "last 1 safari version"
     ]
   }
-}

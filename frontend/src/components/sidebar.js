@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { MdChevronLeft, MdChevronRight, MdAdd, MdOutlineSettings } from 'react-icons/md';
 import { ChatContext } from '../context/chatContext';
-import logo from '../assets/logo.png';
+/* import logo from '../assets/logo.png'; */
 import Modal from './Modal';
 import Setting from './Setting';
 
@@ -32,7 +32,7 @@ const SideBar = () => {
         <div className="flex items-center">
           <div className={`sidebar__app-logo ${!open && 'scale-0 hidden'}`}>
             <span className="w-8 h-8">
-              <img width="30" src={logo} alt="Logo" />
+              {/* <img width="30" src={logo} alt="Logo" /> */}
             </span>
           </div>
           <h1 className={`sidebar__app-title ${!open && 'scale-0 hidden'}`}>SelectQuote</h1>

@@ -1,11 +1,8 @@
-from openai import OpenAI
-import nltk
-from nltk.tokenize import word_tokenize
 from transformers import AutoTokenizer, AutoModel
 import torch
 import csv
-import json
-import simCheck
+from openai import OpenAI
+import nltk
 
 # nltk.download('punkt')
 
@@ -34,7 +31,7 @@ with open('symptoms.csv', mode='r') as csvfile:
 def processed_symptoms(symptomsList):
     processed = {}
     for symptom in symptomsList:
-        words = set(word_tokenize(symptom.lower()))
+        words = set(nltk.word_tokenize(symptom.lower()))
         processed[symptom] = words
     return processed
 
@@ -78,16 +75,10 @@ def generate_clarifying_questions_openai(user_input, client):
 
 # Function to generate clarifying questions based on matched symptom
 def generate_clarifying_questions(user_input):
-    matched_symptom = match_symptom(user_input, processed_symptoms)
+    matched_symptom = match_symptom(user_input, processed_symptoms, tokenizer, model)
     potential_diseases = [disease for disease, symptoms in dsMap.items() if matched_symptom in symptoms]
+    prompt = f"""Given the user's input about their symptoms, what clarifying questions can be asked to understand more about '{matched_symptom}'?"""
 
-<<<<<<< HEAD
-    clarifying_questions = []
-    for disease in potential_diseases:
-        for symptom in dsMap[disease]:
-            if symptom != matched_symptom:  # Avoid asking about the matched symptom again
-                clarifying_questions.append(f"Do you also experience {symptom.lower()}? (Yes/No)")
-=======
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         max_tokens=500,
@@ -96,8 +87,7 @@ def generate_clarifying_questions(user_input):
             {"role": "user", "content": prompt}
         ]
     )
-    return nltk.sent_tokenize(response.choices[0].message.content)
->>>>>>> 268b3f41df79191e50e2ddc4a1a928257fc04323
+    return nltk.sent_tokenize(response['choices'][0]['message']['content'])
 
     clarifying_questions.append("Is there anything else you're experiencing or feel is important to mention?")
     return clarifying_questions
@@ -119,7 +109,7 @@ def main():
         print("Take care! If you have any more concerns, feel free to talk to me.")
         return
     
-    clarifying_questions = generate_clarifying_questions_openai(user_input)
+    clarifying_questions = generate_clarifying_questions_openai(user_input, client)
     user_responses = {}
 
     for question in clarifying_questions:
@@ -130,15 +120,11 @@ def main():
     symptoms_summary = compile_user_symptoms(user_responses)
     print(symptoms_summary)
 
-<<<<<<< HEAD
-if __name__ == "__main__":
-    main()
-=======
-        questions = generate_clarifying_questions(user_input)
-        for question in questions:
-            print(question)
-            user_input = input().strip().lower()
-            user_responses[question] = user_input
+    questions = generate_clarifying_questions(user_input)
+    for question in questions:
+        print(question)
+        user_input = input().strip().lower()
+        user_responses[question] = user_input
         
         # questions2 = generate_longevity_question(user_input)
         # for question2 in questions2:
@@ -160,4 +146,3 @@ if __name__ == "__main__":
             
 
 main()
->>>>>>> 268b3f41df79191e50e2ddc4a1a928257fc04323

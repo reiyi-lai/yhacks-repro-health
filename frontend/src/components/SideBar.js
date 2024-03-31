@@ -1,11 +1,15 @@
 // import './sidebar.css';
 import axios from "axios"
 import React from 'react';
+import logo from './assets/ovary-logo.png'
 
 function Sidebar() {
   return (
     <div className="sidebar">
-      <h2>Repro-Bot</h2>
+      <div className="logo-title-container">
+        <img src={logo} alt='logo'/>
+        <h1>Repro-Bot</h1>
+      </div>
       <ul>
         <li>New Chat</li>
         <li className="inactive-chat">Chat 1</li>

@@ -24,13 +24,13 @@ qualifiers = {
     "gray vaginal discharge": ["grayish vaginal discharge", "cloudy vaginal secretions"],
     "yellow vaginal discharge": ["yellowish vaginal discharge", "yellow-colored discharge"],
     "thick vaginal discharge": ["viscous vaginal discharge", "dense vaginal secretions"],
-    "foul smelling vaginal discharge": ["malodorous vaginal discharge", "foul-smelling secretions", "bad smelling discharge"],
+    "foul smelling vaginal discharge": ["malodorous vaginal discharge", "foul-smelling secretions", "bad smelling discharge", "fishy-odor", "fishy", "foul smell"],
     "burning sensation in peeing": ["painful urination", "discomfort while urinating"],
     "anal itching": ["itchiness around the anus", "rectal itching"],
     "bloody urine": ["blood in urine", "hematuria"],
     "lower abdomen pressure": ["feeling of pressure in the lower abdomen", "abdominal heaviness"],
     "lower abdomen cramping": ["abdominal cramps", "stomach discomfort"],
-    "burning sensation when peeing": ["burning", "burns when pee"]
+    "burning sensation when peeing": ["burning", "burns when pee", "hurns when peeing"]
 }
 
 

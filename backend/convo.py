@@ -10,9 +10,6 @@ from simCheck import getSymptomList, symptoms_list  # Updated function name
 
 client = OpenAI()
 
-from random import shuffle
-
-from random import shuffle
 
 def generate_clarifying_questions(symptoms, user_input, asked_questions):
 
@@ -70,64 +67,6 @@ def generate_clarifying_questions(symptoms, user_input, asked_questions):
     except Exception as e:
         print(f"An error occurred: {e}")
         return "Can you describe that a bit more?"
-
-def rephrase_concern(concern):
-    prompt="Restate the concern made by the patient:\n{concern}\n"
-    try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            max_tokens=150,
-            stop=["\n"],
-            messages=[
-                {"role": "system", "content": "You are a helper taking notes of a patient's concerns to present to the doctor"},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        return response.choices[0].text.strip()
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return "Unable to rephrase the concern at the moment."
-
-    
-def generate_summary(concerns):
-    # Remove duplicates from the list of concerns
-    unique_concerns = list(set(concerns))
-    
-    formatted_concerns = []
-    for concern in unique_concerns:
-        rephrased_concern = rephrase_concern(concern)
-        formatted_concerns.append(rephrased_concern)
-    
-    prompt = "Patient concerns:\n"
-    for idx, concern in enumerate(formatted_concerns, start=1):
-        prompt += f"{idx}. {concern}\n"
-    try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            max_tokens=150,
-            stop=["\n\n"],
-            messages=[
-                {"role": "system", "content": "You are a helper taking notes of a patient's concerns to present to the doctor"},
-                {"role": "user", "content": prompt}
-            ]
-        )
-
-        # Check if response is a list of choices
-        if isinstance(response.choices, list):
-            # Extract text from each choice and join them
-            summary_text = " ".join([choice.message.content for choice in response.choices])
-        elif isinstance(response.choices, dict) and 'message' in response.choices:
-            # If response is a single choice, directly get content
-            summary_text = response.choices['message']['content']
-        else:
-            # If response is neither list nor dict, directly get content
-            summary_text = response.message.content
-
-        return summary_text.strip()
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return "Unable to generate a formal summary at the moment."
-
 
 
 def list_relevant_symptoms(user_input):
@@ -199,10 +138,7 @@ def main():
     print("\nHere are all the concerns you mentioned:")
     for concern in user_concerns:
         print("-", concern)
-    
-    print("\nSummary of your concerns:")
-    summary = generate_summary(user_concerns)
-    print(summary)
+
 
 if __name__ == "__main__":
     main()

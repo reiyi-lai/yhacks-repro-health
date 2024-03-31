@@ -1,6 +1,7 @@
 // import logo from './logo.svg';
 import './App.css';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
 import Sidebar from './components/SideBar.js';
 import ChatBubble from './components/ChatBubbles.js';
 import ChatInputBar from './components/ChatInputBar.js';
@@ -10,6 +11,26 @@ function App() {
     // Handle sending message logic here (e.g., sending message to chat server)
     console.log('Sending message:', message);
   };
+
+  const[data, setdata] = useState('');
+
+  function getData(){
+    axios({
+      method: "GET",
+      url:"/data",
+    })
+    .then((response) => {
+      const res = response
+      setdata(res)
+    }).catch((error) => {
+      if (error.response) {
+        console.log("HEREEEE")
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })}
+  
 
   return (
     <div className="app-container">

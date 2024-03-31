@@ -1,9 +1,11 @@
 import React from 'react';
 // import './sidebar.css';
+import companyIcon from './assets/ovary.png'; 
 
 function Sidebar() {
   return (
     <div className="sidebar">
+      <img src={companyIcon} alt="Company Icon" className="company-icon" />
       <h2>Chat App</h2>
       <ul>
         <li>New Chat</li>

@@ -1,5 +1,5 @@
-import openai
-import nltk
+from openai import OpenAI
+#import nltk
 from nltk.tokenize import word_tokenize
 from transformers import AutoTokenizer, AutoModel
 import torch
@@ -55,6 +55,20 @@ def match_symptom(user_desc, processed_symptoms):
     return best_symptom
 
 # Function to generate clarifying questions based on matched symptom
+def generate_clarifying_questions_openai(user_input):
+    prompt = f"What clarifying questions can be asked to understand more about '{user_input}'?"
+    response = OpenAI.Completion.create(
+        model="text-davinci-003",
+        prompt="Your prompt here",
+        temperature=0.5,
+        max_tokens=100,
+        frequency_penalty=0.0,
+        presence_penalty=0.0
+    )
+    clarifying_questions = [choice.text.strip() for choice in response.choices]
+    return clarifying_questions
+
+# Function to generate clarifying questions based on matched symptom
 def generate_clarifying_questions(user_input):
     matched_symptom = match_symptom(user_input, processed_symptoms)
     potential_diseases = [disease for disease, symptoms in dsMap.items() if matched_symptom in symptoms]
@@ -78,14 +92,14 @@ def compile_user_symptoms(user_responses):
 
 # Main interaction function
 def main():
-    print("How are you feeling today?")
+    print("Why do you not feel well today?")
     user_input = input().lower()
 
     if user_input in ['exit', 'quit', 'stop']:
         print("Take care! If you have any more concerns, feel free to talk to me.")
         return
-
-    clarifying_questions = generate_clarifying_questions(user_input)
+    
+    clarifying_questions = generate_clarifying_questions_openai(user_input)
     user_responses = {}
 
     for question in clarifying_questions:

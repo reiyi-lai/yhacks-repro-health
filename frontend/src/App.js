@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import Sidebar from './components/SideBar.js';
+import ChatBubble from './components/ChatBubbles.js';
+import ChatInputBar from './components/ChatInputBar.js';
 
 function App() {
+  const [data, setData] = useState('');
+
+  useEffect(() => {
+    axios.get('/')
+      .then(response => setData(response.data))
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
+  const handleSendMessage = (message) => {
+    // Handle sending message logic here (e.g., sending message to chat server)
+    console.log('Sending message:', message);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-container">
+      <Sidebar />
+      <div className="chat-container">
+        <div className="chat-view">
+          <ChatBubble text="Hi! How are you feeling today?" isBot={true} />
+          {/* Add more chat bubbles */}
+        </div>
+        <ChatInputBar onSubmit={handleSendMessage} /> {/* Add the ChatInputBar component */}
+      </div>
+      {data && <p>{data}</p>}
     </div>
   );
 }

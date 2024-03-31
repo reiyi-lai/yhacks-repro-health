@@ -43,8 +43,13 @@ def getSymptomList(userInput):
     # Encode the extracted terms to vectors
     patient_embeddings = model.encode(extracted_terms, convert_to_tensor=True)
 
+<<<<<<< HEAD
     relevant_symptoms = set()
     threshold = 0.4  # Adjust the threshold based on testing
+=======
+    userSentence = ' '.join(words)
+    #print(userSentence)
+>>>>>>> c15e45de14136322f32063537ee49549df07d23d
 
     for patient_embedding in patient_embeddings:
         # Compute cosine similarities between user sentence embedding and symptom embeddings
@@ -54,4 +59,27 @@ def getSymptomList(userInput):
             if cosine_scores[0][i] > threshold:
                 relevant_symptoms.add(symptoms_list[i])
 
+<<<<<<< HEAD
     return list(relevant_symptoms) if relevant_symptoms else ["No clear symptom identified"]
+=======
+    #Compute cosine-similarities
+    cosine_scores = util.cos_sim(patientEmbedding, symptomEmbedding)
+
+    #Output the pairs with their score
+    scores = dict()
+    for i in range(len(symptoms_list)):
+        scores[symptoms_list[i]] = cosine_scores[0][i]
+    
+    scores = sorted(scores.items(), reverse=True, key=lambda x:x[1])
+    #print("Similar symptom calculated: " + str(scores[0][0]))
+
+    #only return most relevant symptom as string
+    return scores[0][0]
+
+
+# test different user inputs:
+# getSymptomList("I have pain when I pee")
+# print("\n")
+
+# getSymptomList("My stomach hurts")
+>>>>>>> c15e45de14136322f32063537ee49549df07d23d

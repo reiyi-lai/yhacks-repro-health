@@ -5,7 +5,6 @@ client = OpenAI()
 
 app = Flask(__name__)
 
-
 @app.route('/', methods=['GET', 'POST'])
 def main():
 
@@ -18,7 +17,6 @@ def main():
         ]
     )
 
-    return str(completion.choices[0].message.content)
 
 if __name__ == '__main__':
     app.run(debug=True)

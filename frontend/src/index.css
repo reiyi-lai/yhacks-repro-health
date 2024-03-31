@@ -32,14 +32,14 @@ code {
 }
 
 .sidebar img {
-  margin-top: 20px; 
+  margin-top: 10px; 
   width: 60px; /* Adjust the width as needed */
   height: auto; /* Keeps the aspect ratio of the image */
 }
 
 .sidebar h1 {
   text-align: center;
-  margin-top: 15px; 
+  margin-top: 10px; 
   margin-bottom: 0px;
 }
 

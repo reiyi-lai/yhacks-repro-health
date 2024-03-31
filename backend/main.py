@@ -5,7 +5,7 @@ from openai import OpenAI
 client = OpenAI()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["http://localhost:3000"])
 
 @app.route('/poem', methods=['GET', 'POST'])
 def main():
@@ -19,7 +19,7 @@ def main():
         ]
     )
 
-    return jsonify({'poem': str(completion.choices[0].message.content)})
+    return str(completion.choices[0].message.content)
 
 if __name__ == '__main__':
     app.run(debug=True)

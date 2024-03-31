@@ -1,10 +1,12 @@
 #conversation 
 
-import openai
+from openai import OpenAI
 import json
 import nltk
+import simCheck
 
-nltk.download('all')
+#nltk.download('all')
+client = OpenAI()
 
 clarifying_questions = {
     "general": [
@@ -28,27 +30,58 @@ clarifying_questions = {
 }
 
 def generate_clarifying_questions(user_input):
-    prompt = f"""Given the user's input about their symptoms, generate a series of clarifying questions to better understand their condition. User input: "{user_input}" """
+    prompt = f"""Given the user's input about their symptoms, respond with a question to clarify the user's symptom. User input: "{user_input}" """
 
-    response = openai.Completion.create(
-        engine="davinci",
-        prompt=prompt,
-        temperature=0.7,
-        max_tokens=150,
-        top_p=1,
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        max_tokens=500,
+        messages=[
+            {"role": "system", "content": "You are a healthcare assistant trying to help patients clarify their symptoms"},
+            {"role": "user", "content": prompt}
+        ]
     )
+    return nltk.sent_tokenize(response.choices[0].message.content)
 
-    return nltk.sent_tokenize(response.choices[0].text)
+def generate_longevity_question(user_input):
+    prompt = f"""Given the user's input about their symptoms, respond with a question to clarify how long the user's symptom has been ongoing. User input: "{user_input}" """
+
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        max_tokens=500,
+        messages=[
+            {"role": "system", "content": "You are a healthcare assistant trying to determine how long the patients has been experiencing their symptom"},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    return nltk.sent_tokenize(response.choices[0].message.content)
 
 def main():
+
+    user_responses = {}
+
     print("How are you feeling today?")
+    user_input = input()
+
     while True:
-        user_input = input()
-        if user_input.lower() in ['exit', 'quit', 'stop', 'good', 'great', 'bye', 'goodbye','fine', 'okay', 'well', 'nothing wrong', 'all good', 'no problems', 'no issues', 'excellent', 'splendid']:
+        if user_input.lower() in ['exit', 'quit', 'no' 'nothing', 'none', 'stop', 'good', 'great', 'bye', 'goodbye','fine', 'okay', 'well', 'nothing wrong', 'all good', 'no problems', 'no issues', 'excellent', 'splendid']:
             print("Take care! If you have any more concerns, feel free to talk to me.")
             break
 
-        clarifyQuestions = generate_clarifying_questions(user_input)
-        for question in clarifyQuestions:
-            print(f"{question}")
-            input(" ")
+        questions = generate_clarifying_questions(user_input)
+        for question in questions:
+            print(question)
+            user_input = input().strip().lower()
+            user_responses[question] = user_input
+        
+        questions2 = generate_longevity_question(user_input)
+        for question2 in questions2:
+            print(question2)
+            user_input = input().strip().lower()
+            user_responses[question2] = user_input  
+
+        print("What else would you like to note?")
+        user_input = input().strip().lower()
+    
+            
+
+main()

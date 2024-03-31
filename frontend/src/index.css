@@ -78,7 +78,7 @@ code {
 .chat-bubble.bot {
   align-self: flex-end;
   margin-top: 6px;
-  background-color: #DCF8C6;
+  background-color: #E6E6FA; 
   word-wrap: break-word;
   overflow-wrap: break-word;
   box-shadow: 14px 17px 40px 4px rgba(112,144,176,.15);
@@ -87,7 +87,7 @@ code {
 .chat-bubble.user {
   align-self: flex-end;
   margin-top: 6px;
-  background-color: #C2E0FF;
+  background-color: #DCF8C6;
   text-align: right;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -121,20 +121,34 @@ code {
 
 /* Base button styling */
 .chat-input-bar button {
-  height: 4rem; /* h-16 */
-  width: 4rem; /* w-16 */
+  height: 3rem; /* h-16 */
+  width: 3rem; /* w-16 */
   padding: 0 1rem; /* px-4 */
-  background-color: #007BFF; /* Blue */
+  background-color: white; /* Blue */
   border-radius: 2rem; /* rounded-full */
   cursor: pointer;
   transition: all 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #FFFFFF; /* White text */
+
+  border: none;
+  color: inherit;
+  background: none;
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 300;
+  outline: none;
+}
+
+.chat-input-bar button img {
+  width: 20px; /* Adjust the width as needed */
+  height: auto; /* Keeps the aspect ratio of the image */
+  filter: grayscale(100%) brightness(150%);
 }
 
 /* Button hover effect */
 .chat-input-bar button:hover {
-  background-color: #0056b3; /* Slightly changes color on hover */
+  background-color: grey; /* Slightly changes color on hover */
 }

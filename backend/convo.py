@@ -36,7 +36,7 @@ def generate_clarifying_questions(user_input):
         model="gpt-3.5-turbo",
         max_tokens=500,
         messages=[
-            {"role": "system", "content": "You are a healthcare assistant trying to help patients clarify their symptoms"},
+            {"role": "system", "content": "You are a healthcare assistant trying to help patients clarify their symptoms. Don't ask about how long they have had the symptoms"},
             {"role": "user", "content": prompt}
         ]
     )
@@ -73,14 +73,22 @@ def main():
             user_input = input().strip().lower()
             user_responses[question] = user_input
         
-        questions2 = generate_longevity_question(user_input)
-        for question2 in questions2:
-            print(question2)
-            user_input = input().strip().lower()
-            user_responses[question2] = user_input  
+        # questions2 = generate_longevity_question(user_input)
+        # for question2 in questions2:
+        #     print(question2)
+        #     user_input = input().strip().lower()
+        #     user_responses[question2] = user_input  
 
         print("What else would you like to note?")
         user_input = input().strip().lower()
+    
+    finalSymptoms = []
+    for response in user_responses.values():
+        finalSymptoms.append(simCheck.getSymptomList(response))
+    
+    print("Here are the symptoms we've determined you have mentioned:")
+    for symptom in finalSymptoms:
+        print(symptom, end=", ")
     
             
 

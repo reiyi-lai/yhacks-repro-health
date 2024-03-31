@@ -1,13 +1,13 @@
-import { ChatContextProvider } from './context/chatContext';
+import { ChatContextProvider } from './components/chatContext.js';
 import SideBar from './components/SideBar';
-import ChatView from './components/ChatView';
+import ChatView from './components/ChatView.js';
 import { React, useEffect, useState } from 'react';
 import Modal from './components/Modal';
-import Setting from './components/Setting';
+// import Setting from './components/Setting';
 
-import Navigation from "./components/Navigation/Navigation.jsx";
-import Chat from "./components/Chat/Chat.jsx";
-import Feedback from "./components/Feedback/Feedback.jsx";
+// import Navigation from "./components/Navigation/Navigation.jsx";
+// import Chat from "./components/Chat/Chat.jsx";
+// import Feedback from "./components/Feedback/Feedback.jsx";
 import "./App.css";
 
 const App = () => {
@@ -22,7 +22,7 @@ const App = () => {
   return (
     <ChatContextProvider>
       <Modal title="Setting" modalOpen={modalOpen} setModalOpen={setModalOpen}>
-        <Setting modalOpen={modalOpen} setModalOpen={setModalOpen} />
+        <modalOpen={modalOpen} setModalOpen={setModalOpen} />
       </Modal>
       <div className="flex transition duration-500 ease-in-out">
         <SideBar />

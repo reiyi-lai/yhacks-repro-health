@@ -107,17 +107,18 @@ code {
   height: 4rem; /* h-16 */
   width: 4rem; /* w-16 */
   padding: 0 1rem; /* px-4 */
+  background-color: #007BFF; /* Blue */
   border-radius: 2rem; /* rounded-full */
   cursor: pointer;
   transition: all 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #000; /* text-black */
+  color: #FFFFFF; /* White text */
 }
 
 .chat-input-bar button:hover {
-  background-color: #cbd5e0;
+  background-color: #0056b3;
 }
 
 .chat-input-bar button i {

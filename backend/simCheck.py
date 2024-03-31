@@ -84,7 +84,7 @@ def getSymptomList(userInput):
     words = [stemmer.stem(word) for word in paragraph]
 
     userSentence = ' '.join(words)
-    print(userSentence)
+    #print(userSentence)
 
     patientResponse = [userSentence]
 
@@ -100,14 +100,14 @@ def getSymptomList(userInput):
         scores[symptoms_list[i]] = cosine_scores[0][i]
     
     scores = sorted(scores.items(), reverse=True, key=lambda x:x[1])
-    print("Similar symptom calculated: " + str(scores[0][0]))
+    #print("Similar symptom calculated: " + str(scores[0][0]))
 
     #only return most relevant symptom as string
     return scores[0][0]
 
 
 # test different user inputs:
-getSymptomList("I have pain when I pee")
-print("\n")
+# getSymptomList("I have pain when I pee")
+# print("\n")
 
-getSymptomList("My stomach hurts")
+# getSymptomList("My stomach hurts")

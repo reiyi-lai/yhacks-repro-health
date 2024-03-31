@@ -81,11 +81,23 @@ def generate_clarifying_questions(user_input):
     matched_symptom = match_symptom(user_input, processed_symptoms)
     potential_diseases = [disease for disease, symptoms in dsMap.items() if matched_symptom in symptoms]
 
+<<<<<<< HEAD
     clarifying_questions = []
     for disease in potential_diseases:
         for symptom in dsMap[disease]:
             if symptom != matched_symptom:  # Avoid asking about the matched symptom again
                 clarifying_questions.append(f"Do you also experience {symptom.lower()}? (Yes/No)")
+=======
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        max_tokens=500,
+        messages=[
+            {"role": "system", "content": "You are a healthcare assistant trying to help patients clarify their symptoms. Don't ask about how long they have had the symptoms"},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    return nltk.sent_tokenize(response.choices[0].message.content)
+>>>>>>> 268b3f41df79191e50e2ddc4a1a928257fc04323
 
     clarifying_questions.append("Is there anything else you're experiencing or feel is important to mention?")
     return clarifying_questions
@@ -118,5 +130,34 @@ def main():
     symptoms_summary = compile_user_symptoms(user_responses)
     print(symptoms_summary)
 
+<<<<<<< HEAD
 if __name__ == "__main__":
     main()
+=======
+        questions = generate_clarifying_questions(user_input)
+        for question in questions:
+            print(question)
+            user_input = input().strip().lower()
+            user_responses[question] = user_input
+        
+        # questions2 = generate_longevity_question(user_input)
+        # for question2 in questions2:
+        #     print(question2)
+        #     user_input = input().strip().lower()
+        #     user_responses[question2] = user_input  
+
+        print("What else would you like to note?")
+        user_input = input().strip().lower()
+    
+    finalSymptoms = []
+    for response in user_responses.values():
+        finalSymptoms.append(simCheck.getSymptomList(response))
+    
+    print("Here are the symptoms we've determined you have mentioned:")
+    for symptom in finalSymptoms:
+        print(symptom, end=", ")
+    
+            
+
+main()
+>>>>>>> 268b3f41df79191e50e2ddc4a1a928257fc04323

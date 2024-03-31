@@ -30,8 +30,6 @@ function Sidebar() {
   // }
 
 
-
-
   return (
     <div className="sidebar">
       <h2>Chat App</h2>

@@ -1,12 +1,10 @@
-# #checks similarity of user input with symptoms list
-
-
+ #checks similarity of user input with symptoms list
+#import nltk
 from nltk.stem import PorterStemmer
-from nltk.corpus import stopwords
 import iknowpy
 from sentence_transformers import SentenceTransformer, util
 
-# nltk.download('all')
+#nltk.download()
 
 # initialize the engine
 iknow = iknowpy.iKnowEngine()

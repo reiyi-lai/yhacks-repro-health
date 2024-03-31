@@ -1,54 +1,100 @@
-#conversation 
-
 import openai
-import json
 import nltk
+from nltk.tokenize import word_tokenize
+from transformers import AutoTokenizer, AutoModel
+import torch
+import csv
 
-nltk.download('all')
 
-clarifying_questions = {
-    "general": [
-        "How long have you been experiencing this symptom?",
-        "Is the pain constant or does it come and go?"
-    ],
-    "pain_intensity": [
-        "On a scale from 1 to 10, how would you rate your pain?",
-        "Does anything make the pain better or worse?"
-    ],
-    "location_specific": {
-        "headache": [
-            "Is the pain localized to one side of your head or all over?",
-            "Do you experience sensitivity to light or noise?"
-        ],
-        "abdominal": [
-            "Is the pain more towards the upper or lower part of your abdomen?",
-            "Does the pain spread to any other part of your body?"
-        ]
-    }
-}
+model_name = "sentence-transformers/all-MiniLM-L6-v2"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModel.from_pretrained(model_name)
 
+symptomsList = []
+diseasesList = []
+dsMap = {}  # Disease symptoms map
+
+# Load and preprocess symptoms and diseases from CSV
+with open('symptoms.csv', mode='r') as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+        diseasesList.append(row['Disease Name'])
+        symptoms = row['Symptoms'].split(', ')
+        dsMap[row['Disease Name']] = symptoms
+        for symptom in symptoms:
+            if symptom not in symptomsList:  # Check for duplicates
+                symptomsList.append(symptom)
+
+# Function to process symptoms for better matching
+def processed_symptoms(symptomsList):
+    processed = {}
+    for symptom in symptomsList:
+        words = set(word_tokenize(symptom.lower()))
+        processed[symptom] = words
+    return processed
+
+processed_symptoms = processed_symptoms(symptomsList)
+
+# Function to match user description to closest symptom
+def match_symptom(user_desc, processed_symptoms):
+    user_input_tokens = tokenizer(user_desc, return_tensors="pt", padding=True, truncation=True, max_length=512)
+    user_input_embeddings = model(**user_input_tokens).pooler_output
+
+    best_symptom = None
+    highest_similarity = -1
+
+    for symptom, _ in processed_symptoms.items():
+        symptom_tokens = tokenizer(symptom, return_tensors="pt", padding=True, truncation=True, max_length=512)
+        symptom_embeddings = model(**symptom_tokens).pooler_output
+        similarity = torch.cosine_similarity(user_input_embeddings, symptom_embeddings).item()
+
+        if similarity > highest_similarity:
+            best_symptom = symptom
+            highest_similarity = similarity
+
+    return best_symptom
+
+# Function to generate clarifying questions based on matched symptom
 def generate_clarifying_questions(user_input):
-    prompt = f"""Given the user's input about their symptoms, generate a series of clarifying questions to better understand their condition. User input: "{user_input}" """
+    matched_symptom = match_symptom(user_input, processed_symptoms)
+    potential_diseases = [disease for disease, symptoms in dsMap.items() if matched_symptom in symptoms]
 
-    response = openai.Completion.create(
-        engine="davinci",
-        prompt=prompt,
-        temperature=0.7,
-        max_tokens=150,
-        top_p=1,
-    )
+    clarifying_questions = []
+    for disease in potential_diseases:
+        for symptom in dsMap[disease]:
+            if symptom != matched_symptom:  # Avoid asking about the matched symptom again
+                clarifying_questions.append(f"Do you also experience {symptom.lower()}? (Yes/No)")
 
-    return nltk.sent_tokenize(response.choices[0].text)
+    clarifying_questions.append("Is there anything else you're experiencing or feel is important to mention?")
+    return clarifying_questions
 
+# Function to compile user's symptoms into a summary
+def compile_user_symptoms(user_responses):
+    confirmed_symptoms = [symptom for symptom, response in user_responses.items() if response == 'yes']
+    if confirmed_symptoms:
+        return "Your symptoms in medical terms are: " + ", ".join(confirmed_symptoms)
+    else:
+        return "No specific symptoms were confirmed."
+
+# Main interaction function
 def main():
     print("How are you feeling today?")
-    while True:
-        user_input = input()
-        if user_input.lower() in ['exit', 'quit', 'stop', 'good', 'great', 'bye', 'goodbye','fine', 'okay', 'well', 'nothing wrong', 'all good', 'no problems', 'no issues', 'excellent', 'splendid']:
-            print("Take care! If you have any more concerns, feel free to talk to me.")
-            break
+    user_input = input().lower()
 
-        clarifyQuestions = generate_clarifying_questions(user_input)
-        for question in clarifyQuestions:
-            print(f"{question}")
-            input(" ")
+    if user_input in ['exit', 'quit', 'stop']:
+        print("Take care! If you have any more concerns, feel free to talk to me.")
+        return
+
+    clarifying_questions = generate_clarifying_questions(user_input)
+    user_responses = {}
+
+    for question in clarifying_questions:
+        print(question)
+        answer = input("Your answer (Yes/No): ").strip().lower()
+        user_responses[question] = answer
+
+    symptoms_summary = compile_user_symptoms(user_responses)
+    print(symptoms_summary)
+
+if __name__ == "__main__":
+    main()

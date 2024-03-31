@@ -1,12 +1,15 @@
 import React from 'react';
-// import './ChatBubbles.css';
 
-const ChatBubbles = ({ text, isBot }) => {
-    return (
-      <div className={`chat-bubble ${isBot ? 'bot' : 'user'}`}>
-        {text}
-      </div>
-    );
-  };
-  
-  export default ChatBubbles;
+const ChatBubbles = ({ messages }) => {
+  return (
+    <div>
+      {messages.map((message, index) => (
+        <div className={`chat-bubble ${isBot ? 'bot' : 'user'}`}>
+          {message.text}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default ChatBubbles;

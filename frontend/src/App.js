@@ -1,14 +1,16 @@
 // import logo from './logo.svg';
 import './App.css';
-import React from 'react';
+import React, { useState } from 'react';
 import Sidebar from './components/SideBar.js';
 import ChatBubble from './components/ChatBubbles.js';
 import ChatInputBar from './components/ChatInputBar.js';
 
-function App() {
-  const handleSendMessage = (message) => {
-    // Handle sending message logic here (e.g., sending message to chat server)
-    console.log('Sending message:', message);
+const ChatApp = () => {
+  const [messages, setMessages] = useState([]);
+
+  const handleNewMessage = (message) => {
+    // Add the new message to the messages array
+    setMessages([...messages, { text: message, isBot: false }]);
   };
 
   return (
@@ -17,12 +19,14 @@ function App() {
       <div className="chat-container">
         <div className="chat-view">
           <ChatBubble text="Hi! How are you feeling today?" isBot={true} />
-          {/* Add more chat bubbles */}
+          {messages.map((message, index) => (
+          <ChatBubble key={index} text={message.text} isBot={message.isBot} />
+        ))}
         </div>
-        <ChatInputBar onSubmit={handleSendMessage} /> {/* Add the ChatInputBar component */}
+        <ChatInputBar onSubmit={handleNewMessage} /> 
       </div>
     </div>
   );
 }
 
-export default App;
+export default ChatApp;

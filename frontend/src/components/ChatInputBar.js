@@ -1,5 +1,5 @@
+// ChatInputBar.js
 import React, { useState } from 'react';
-// import './ChatInputBar.css';
 
 const ChatInputBar = ({ onSubmit }) => {
   const [message, setMessage] = useState('');
@@ -11,8 +11,8 @@ const ChatInputBar = ({ onSubmit }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (message.trim() !== '') {
-      onSubmit(message);
-      setMessage('');
+      onSubmit(message); // Call the onSubmit function with the message
+      setMessage(''); // Clear the input field after submission
     }
   };
 

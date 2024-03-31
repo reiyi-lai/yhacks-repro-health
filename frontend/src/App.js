@@ -1,7 +1,8 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import React from 'react';
-import Sidebar from './Sidebar';
+import Sidebar from './components/SideBar.js';
+import ChatMessage from './components/ChatMessage.js';
 
 function App() {
   return (

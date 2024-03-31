@@ -1,5 +1,5 @@
 import React from 'react';
-import './Sidebar.css'; // Import your CSS file for styling
+// import './index.css'; // Import your CSS file for styling
 
 function Sidebar() {
   return (

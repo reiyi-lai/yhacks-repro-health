@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from openai import OpenAI
 
 client = OpenAI()
 
 app = Flask(__name__)
+CORS(app)
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/poem', methods=['GET', 'POST'])
 def main():
 
     completion = client.chat.completions.create(
@@ -17,6 +19,7 @@ def main():
         ]
     )
 
+    return jsonify({'poem': str(completion.choices[0].message.content)})
 
 if __name__ == '__main__':
     app.run(debug=True)

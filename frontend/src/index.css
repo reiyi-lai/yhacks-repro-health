@@ -110,24 +110,24 @@ code {
   font-size: 14px;
 }
 
+/* Base button styling */
 .chat-input-bar button {
-  height: 4rem; /* h-16 */
-  width: 4rem; /* w-16 */
-  padding: 0 1rem; /* px-4 */
-  background-color: #007BFF; /* Blue */
-  border-radius: 2rem; /* rounded-full */
-  cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #FFFFFF; /* White text */
+  border: none; /* Removes default border */
+  background-color: #ADD8E6; /* Background color of the button */
+  color: #000; /* Color of the text/icon inside the button */
+  padding: 10px; /* Space around the content inside the button */
+  border-radius: 50%; /* Makes the button circular */
+  cursor: pointer; /* Changes the mouse cursor on hover */
+  outline: none; /* Removes the outline shown on focus */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow to the button */
+  width: 50px; /* Width of the button */
+  height: 50px; /* Height of the button, equal to width to make it a perfect circle */
+  display: flex; /* Aligns the icon/text inside the button */
+  justify-content: center; /* Centers the icon/text horizontally */
+  align-items: center; /* Centers the icon/text vertically */
 }
 
+/* Button hover effect */
 .chat-input-bar button:hover {
-  background-color: #0056b3;
-}
-
-.chat-input-bar button i {
-  font-size: 2rem; /* Adjust icon size */
+  background-color: #f2f2f2; /* Slightly changes color on hover */
 }

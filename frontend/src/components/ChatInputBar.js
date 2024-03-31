@@ -24,7 +24,9 @@ const ChatInputBar = ({ onSubmit }) => {
         value={message}
         onChange={handleChange}
       />
-      <button type="submit">Send</button>
+      <button type="submit">
+      <img src="./assets/send-icon.png" alt="Arrow" />
+      </button>
     </form>
   );
 };

@@ -5,7 +5,7 @@ import ChatBubble from './components/ChatBubbles.js';
 import ChatInputBar from './components/ChatInputBar.js';
 import { fetchAPI } from './services/api';
 
-function App() {
+function ChatApp() {
   const [data, setData] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -24,11 +24,11 @@ function App() {
     fetchData();
   }, [loading]);
 
+  const [messages, setMessages] = useState([]);
 
-
-  const handleSendMessage = (message) => {
+  const handleNewMessage = (message) => {
     // Handle sending message logic here (e.g., sending message to chat server)
-    console.log('Sending message:', message);
+    setMessages([...messages, { text: message, isBot: false }]);
   };
 
   const handleLoading = () => {

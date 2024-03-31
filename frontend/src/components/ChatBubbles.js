@@ -1,13 +1,9 @@
 import React from 'react';
 
-const ChatBubbles = ({ messages }) => {
+const ChatBubbles = ({ text, isBot }) => {
   return (
-    <div>
-      {messages.map((message, index) => (
-        <div className={`chat-bubble ${isBot ? 'bot' : 'user'}`}>
-          {message.text}
-        </div>
-      ))}
+    <div className={`chat-bubble ${isBot ? 'bot' : 'user'}`}>
+      {text}
     </div>
   );
 };

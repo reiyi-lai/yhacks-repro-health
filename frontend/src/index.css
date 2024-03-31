@@ -21,12 +21,11 @@ code {
 
 .sidebar {
   height: 100%;
-  width: 200px;
-  position: fixed;
-  top: 0;
-  left: 0;
+  width: 250px;
   background-color: #f0f0f0;
-  padding-top: 20px;
+  position: fixed;
+  left: 0;
+  z-index: 100; /* Ensures the sidebar stays above other content */
 }
 
 .sidebar h2 {
@@ -43,6 +42,10 @@ code {
 .sidebar ul li {
   padding: 10px;
   cursor: pointer;
+}
+
+.sidebar ul li.inactive-chat {
+  color: #757575; /* A medium grey color; adjust as needed */
 }
 
 .sidebar ul li:hover {
@@ -69,6 +72,7 @@ code {
   line-height: 1.5;
   align-items: flex-start;
   justify-content: flex-end;
+  box-shadow: 14px 17px 40px 4px rgba(112,144,176,.15);
 }
 
 .chat-bubble.bot {
@@ -77,6 +81,7 @@ code {
   background-color: #DCF8C6;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  box-shadow: 14px 17px 40px 4px rgba(112,144,176,.15);
 }
 
 .chat-bubble.user {
@@ -86,18 +91,22 @@ code {
   text-align: right;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  box-shadow: 14px 17px 40px 4px rgba(112,144,176,.15);
 }
 
 .chat-input-bar {
   position: fixed;
   bottom: 0;
-  left: 250px; /* Adjust this value based on the width of your left sidebar */
+  width: 80%;
+  padding-left: 0px; /* Adjust this value based on the width of your left sidebar */
   right: 0;
   background-color: #FFFFFF;
   border-top: 1px solid #CCCCCC;
-  padding: 8px;
+  box-shadow: 14px 17px 40px 4px rgba(112,144,176,.15);
+  padding: 7px;
   display: flex;
   align-items: center;
+  border-radius: 25px;
   justify-content: space-between;
 }
 
@@ -105,29 +114,27 @@ code {
   flex: 1;
   height: 36px;
   border: none;
-  border-radius: 18px;
   padding: 0 16px;
   font-size: 14px;
+  outline: none;
 }
 
 /* Base button styling */
 .chat-input-bar button {
-  border: none; /* Removes default border */
-  background-color: #ADD8E6; /* Background color of the button */
-  color: #000; /* Color of the text/icon inside the button */
-  padding: 10px; /* Space around the content inside the button */
-  border-radius: 50%; /* Makes the button circular */
-  cursor: pointer; /* Changes the mouse cursor on hover */
-  outline: none; /* Removes the outline shown on focus */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow to the button */
-  width: 50px; /* Width of the button */
-  height: 50px; /* Height of the button, equal to width to make it a perfect circle */
-  display: flex; /* Aligns the icon/text inside the button */
-  justify-content: center; /* Centers the icon/text horizontally */
-  align-items: center; /* Centers the icon/text vertically */
+  height: 4rem; /* h-16 */
+  width: 4rem; /* w-16 */
+  padding: 0 1rem; /* px-4 */
+  background-color: #007BFF; /* Blue */
+  border-radius: 2rem; /* rounded-full */
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF; /* White text */
 }
 
 /* Button hover effect */
 .chat-input-bar button:hover {
-  background-color: #f2f2f2; /* Slightly changes color on hover */
+  background-color: #0056b3; /* Slightly changes color on hover */
 }

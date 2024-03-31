@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import './ChatInputBar.css'; // Import CSS file for styling chat input bar
+// import './ChatInputBar.css';
 
 const ChatInputBar = ({ onSubmit }) => {
   const [message, setMessage] = useState('');

@@ -14,7 +14,7 @@ code {
 
 .sidebar {
   height: 100%;
-  width: 250px;
+  width: 200px;
   position: fixed;
   top: 0;
   left: 0;
@@ -29,7 +29,7 @@ code {
 
 .sidebar ul {
   list-style-type: none;
-  padding: 0;
+  padding: 20;
   margin: 0;
 }
 
@@ -42,6 +42,16 @@ code {
   background-color: #ccc;
 }
 
+.chat-view {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: flex-end; */
+  flex: 1; /* This makes the chat container take up the remaining space */
+  /* display: flex; */
+  /* flex-direction: column; */
+  padding-bottom: 20px; /* Align chat bubbles to the right */
+}
+
 .chat-bubble {
   max-width: 70%;
   margin: 8px;
@@ -50,30 +60,38 @@ code {
   background-color: #F0F0F0;
   font-size: 14px;
   line-height: 1.5;
+  align-items: flex-start;
+  justify-content: flex-end;
 }
 
 .chat-bubble.bot {
-  align-self: flex-start;
+  align-self: flex-end;
+  margin-top: 6px;
   background-color: #DCF8C6;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .chat-bubble.user {
   align-self: flex-end;
+  margin-top: 6px;
   background-color: #C2E0FF;
+  text-align: right;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-
 .chat-input-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   position: fixed;
   bottom: 0;
-  left: 0;
-  width: 100%;
+  left: 250px; /* Adjust this value based on the width of your left sidebar */
+  right: 0;
   background-color: #FFFFFF;
   border-top: 1px solid #CCCCCC;
   padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .chat-input-bar input {
@@ -86,16 +104,22 @@ code {
 }
 
 .chat-input-bar button {
-  height: 36px;
-  border: none;
-  border-radius: 18px;
-  background-color: #007BFF;
-  color: #FFFFFF;
-  padding: 0 16px;
-  font-size: 14px;
+  height: 4rem; /* h-16 */
+  width: 4rem; /* w-16 */
+  padding: 0 1rem; /* px-4 */
+  border-radius: 2rem; /* rounded-full */
   cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000; /* text-black */
 }
 
 .chat-input-bar button:hover {
-  background-color: #0056b3;
+  background-color: #cbd5e0;
+}
+
+.chat-input-bar button i {
+  font-size: 2rem; /* Adjust icon size */
 }

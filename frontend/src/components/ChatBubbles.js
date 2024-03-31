@@ -1,5 +1,5 @@
 import React from 'react';
-// import './Chat.css';
+// import './ChatBubbles.css';
 
 const ChatBubbles = ({ text, isBot }) => {
     return (

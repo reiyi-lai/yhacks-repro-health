@@ -2,17 +2,21 @@
 import './App.css';
 import React from 'react';
 import Sidebar from './components/SideBar.js';
-import Chatbubbles from './components/ChatBubbles.js';
-import Chatinputbar from './components/ChatInputBar.js';
+import ChatBubble from './components/ChatBubbles.js';
+import ChatInputBar from './components/ChatInputBar.js';
 
 function App() {
+  const handleSendMessage = (message) => {
+    // Handle sending message logic here (e.g., sending message to chat server)
+    console.log('Sending message:', message);
+  };
+
   return (
     <div className="app-container">
       <Sidebar />
       <div className="chat-container">
         <div className="chat-view">
-          <Chatinputbar text="Hello! How can I assist you?" isBot={true} />
-          <Chatinputbar text="Hi! I have a question about..." isBot={false} />
+          <ChatBubble text="Hi! How are you feeling today?" isBot={true} />
           {/* Add more chat bubbles */}
         </div>
         <ChatInputBar onSubmit={handleSendMessage} /> {/* Add the ChatInputBar component */}

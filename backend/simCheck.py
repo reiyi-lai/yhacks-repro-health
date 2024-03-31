@@ -1,85 +1,84 @@
- #checks similarity of user input with symptoms list
-#import nltk
+import csv
 from nltk.stem import PorterStemmer
 import iknowpy
 from sentence_transformers import SentenceTransformer, util
 
-#nltk.download()
+
+qualifiers = {
+    "pain during sex": ["painful intercourse", "discomfort during sexual activity"],
+    "vaginal bleeding": ["abnormal vaginal bleeding", "irregular menstrual bleeding", "irregular periods"],
+    "blisters on the genitals": ["genital sores", "genital lesions", "fluid-filled bumps on the genitals"],
+    "blisters on the rectum": ["rectal sores", "rectal lesions", "fluid-filled bumps around the anus"],
+    "blisters on the mouth": ["oral sores", "canker sores", "cold sores", "fluid-filled bumps in the mouth"],
+    "mouth ulcers": ["oral sores on the inside", "mouth bumps on the inside"],
+    "frequent urination": ["urinating often", "increased urination frequency", "peeing alot"],
+    "lower back pain": ["pain in the lumbar region", "discomfort in the lower back"],
+    "infertility": ["difficulty conceiving", "reproductive challenges"],
+    "heavy period": ["excessive menstrual bleeding", "prolonged menstrual flow"],
+    "painful period": ["menstrual pain", "dysmenorrhea", "cramps"],
+    "pain in lower abdomen": ["abdominal discomfort", "pelvic pain"],
+    "painful bowel movements": ["discomfort during defecation", "pain during passing stool"],
+    "acne": ["skin breakouts", "pimple formation"],
+    "thin vaginal discharge": ["watery vaginal discharge", "clear vaginal secretions"],
+    "white vaginal discharge": ["milky vaginal discharge", "thick white discharge"],
+    "gray vaginal discharge": ["grayish vaginal discharge", "cloudy vaginal secretions"],
+    "yellow vaginal discharge": ["yellowish vaginal discharge", "yellow-colored discharge"],
+    "thick vaginal discharge": ["viscous vaginal discharge", "dense vaginal secretions"],
+    "foul smelling vaginal discharge": ["malodorous vaginal discharge", "foul-smelling secretions", "bad smelling discharge"],
+    "burning sensation in peeing": ["painful urination", "discomfort while urinating"],
+    "anal itching": ["itchiness around the anus", "rectal itching"],
+    "bloody urine": ["blood in urine", "hematuria"],
+    "lower abdomen pressure": ["feeling of pressure in the lower abdomen", "abdominal heaviness"],
+    "lower abdomen cramping": ["abdominal cramps", "stomach discomfort"],
+    "burning sensation when peeing": ["burning", "burns when pee"]
+}
 
 
-import csv
 
-symptoms_list = []
+# Load symptoms from CSV
+def load_symptoms(csv_filepath='symptoms.csv'):
+    symptoms_list = []
+    # Open csv to read
+    with open('symptoms.csv', mode='r') as csvfile:
+        reader = csv.DictReader(csvfile) 
 
-# Load and preprocess symptoms from CSV
-with open('symptoms.csv', mode='r') as csvfile:
-    reader = csv.DictReader(csvfile)
-    for row in reader:
-        symptoms = row['Symptoms'].split(', ')
-        for symptom in symptoms:
-            if symptom not in symptoms_list:  # Check for duplicates
-                symptoms_list.append(symptom)
+        for row in reader:
+            symptoms = row['Symptoms'].split(', ') 
+            for symptom in symptoms:
+                # Check if the symptom is a qualifier
+                if symptom.lower() in qualifiers:
+                    symptoms_list.extend(qualifiers[symptom.lower()])
+                # Add the symptom to the list
+                if symptom not in symptoms_list:
+                    symptoms_list.append(symptom)
 
-# compute the embeddings of the symptoms_list
+    return symptoms_list
+
+symptoms_list = load_symptoms()
 model = SentenceTransformer('all-MiniLM-L6-v2')
 symptomEmbedding = model.encode(symptoms_list, convert_to_tensor=True)
+iknow = iknowpy.iKnowEngine()
 
-# initialize the enginedef getSymptomList(userInput):
-    # Initialize the stemmer and the iKnow engine
-def getSymptomList(userInput):
-    # Initialize the iKnow engine
-    iknow = iknowpy.iKnowEngine()
-
-    # Index the user input to extract meaningful entities
+def getSymptomList(userInput, top_n=2, threshold = 0.2):
+    stemmer = PorterStemmer()
     iknow.index(userInput, "en")
-    extracted_terms = []
+    paragraph = []
 
-    # Extract concepts or relations as they likely represent symptoms
-    for sentence in iknow.m_index['sentences']:
-        for entity in sentence['entities']:
-            if entity['type'] in ['Concept', 'Relation']:
-                extracted_terms.append(entity['text'])  # Use the full text instead of stemmed version
+    for s in iknow.m_index['sentences']:
+        for e in s['entities']:
+            if e['type'] in ['Concept', 'Relation']:
+                paragraph.append(e['index'])
 
-    # Encode the extracted terms to vectors
-    patient_embeddings = model.encode(extracted_terms, convert_to_tensor=True)
-
-<<<<<<< HEAD
-    relevant_symptoms = set()
-    threshold = 0.4  # Adjust the threshold based on testing
-=======
+    words = [stemmer.stem(word) for word in paragraph]
     userSentence = ' '.join(words)
-    #print(userSentence)
->>>>>>> c15e45de14136322f32063537ee49549df07d23d
 
-    for patient_embedding in patient_embeddings:
-        # Compute cosine similarities between user sentence embedding and symptom embeddings
-        cosine_scores = util.cos_sim(patient_embedding, symptomEmbedding)
-
-        for i in range(len(symptoms_list)):
-            if cosine_scores[0][i] > threshold:
-                relevant_symptoms.add(symptoms_list[i])
-
-<<<<<<< HEAD
-    return list(relevant_symptoms) if relevant_symptoms else ["No clear symptom identified"]
-=======
-    #Compute cosine-similarities
+    patientResponse = [userSentence]
+    patientEmbedding = model.encode(patientResponse, convert_to_tensor=True)
     cosine_scores = util.cos_sim(patientEmbedding, symptomEmbedding)
 
-    #Output the pairs with their score
-    scores = dict()
-    for i in range(len(symptoms_list)):
-        scores[symptoms_list[i]] = cosine_scores[0][i]
-    
-    scores = sorted(scores.items(), reverse=True, key=lambda x:x[1])
-    #print("Similar symptom calculated: " + str(scores[0][0]))
+    # Rank symptoms by similarity score
+    ranked_symptoms = sorted(zip(symptoms_list, cosine_scores[0]), key=lambda x: x[1], reverse=True)
 
-    #only return most relevant symptom as string
-    return scores[0][0]
-
-
-# test different user inputs:
-# getSymptomList("I have pain when I pee")
-# print("\n")
-
-# getSymptomList("My stomach hurts")
->>>>>>> c15e45de14136322f32063537ee49549df07d23d
+    # Select top N symptoms based on similarity
+    top_symptoms = [symptom for symptom, score in ranked_symptoms[:top_n]]
+    return top_symptoms

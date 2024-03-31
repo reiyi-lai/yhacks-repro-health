@@ -1,5 +1,6 @@
 from openai import OpenAI
 import json
+from random import shuffle
 import random
 import nltk
 from simCheck import getSymptomList, symptoms_list  # Updated function name
@@ -8,6 +9,10 @@ from simCheck import getSymptomList, symptoms_list  # Updated function name
 # nltk.download('punkt')
 
 client = OpenAI()
+
+from random import shuffle
+
+from random import shuffle
 
 def generate_clarifying_questions(symptoms, user_input, asked_questions):
 
@@ -21,12 +26,22 @@ def generate_clarifying_questions(symptoms, user_input, asked_questions):
         "location": "Where exactly do you feel this?"
     }
 
-    unasked_question_types = [q_type for q_type in question_types if symptom not in asked_questions or q_type not in asked_questions[symptom]]
+    # Shuffle the question types to introduce randomness
+    unasked_question_types = list(question_types.keys())
+    random.shuffle(unasked_question_types)
 
-    if not unasked_question_types:
-        return None  # If all types of questions have been asked, don't repeat
-
-    selected_question_type = random.choice(unasked_question_types)
+    # Check if any question type for the symptom has been asked before
+    if symptom in asked_questions:
+        for q_type in unasked_question_types:
+            if q_type not in asked_questions[symptom]:
+                selected_question_type = q_type
+                break
+        else:
+            # If all question types have been asked, return None
+            return None
+    else:
+        # If no question has been asked for the symptom, select a random question type
+        selected_question_type = random.choice(unasked_question_types)
 
     # Check if the question about this symptom was already asked
     if symptom in asked_questions:
@@ -56,43 +71,138 @@ def generate_clarifying_questions(symptoms, user_input, asked_questions):
         print(f"An error occurred: {e}")
         return "Can you describe that a bit more?"
 
+def rephrase_concern(concern):
+    prompt="Restate the concern made by the patient:\n{concern}\n"
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            max_tokens=150,
+            stop=["\n"],
+            messages=[
+                {"role": "system", "content": "You are a helper taking notes of a patient's concerns to present to the doctor"},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        return response.choices[0].text.strip()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return "Unable to rephrase the concern at the moment."
+
+    
+def generate_summary(concerns):
+    # Remove duplicates from the list of concerns
+    unique_concerns = list(set(concerns))
+    
+    formatted_concerns = []
+    for concern in unique_concerns:
+        rephrased_concern = rephrase_concern(concern)
+        formatted_concerns.append(rephrased_concern)
+    
+    prompt = "Patient concerns:\n"
+    for idx, concern in enumerate(formatted_concerns, start=1):
+        prompt += f"{idx}. {concern}\n"
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            max_tokens=150,
+            stop=["\n\n"],
+            messages=[
+                {"role": "system", "content": "You are a helper taking notes of a patient's concerns to present to the doctor"},
+                {"role": "user", "content": prompt}
+            ]
+        )
+
+        # Check if response is a list of choices
+        if isinstance(response.choices, list):
+            # Extract text from each choice and join them
+            summary_text = " ".join([choice.message.content for choice in response.choices])
+        elif isinstance(response.choices, dict) and 'message' in response.choices:
+            # If response is a single choice, directly get content
+            summary_text = response.choices['message']['content']
+        else:
+            # If response is neither list nor dict, directly get content
+            summary_text = response.message.content
+
+        return summary_text.strip()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return "Unable to generate a formal summary at the moment."
+
+
+
+def list_relevant_symptoms(user_input):
+    prompt = f"The user mentioned '{user_input}'. Tell me the most relevant symptom from {symptoms_list}"
+    for symptom in symptoms_list:
+        if symptom.lower() in user_input.lower():
+            prompt += f"- {symptom}\n"
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo3",
+            prompt=prompt,
+            max_tokens=150,
+            stop=["\n\n"],
+            messages=[
+                {"role": "system", "content": "You are a helper providing information about relevant symptoms to the user based on what they say"},
+                {"role": "user", "content": user_input}
+            ]
+        )
+
+        # Extracting the response from completion
+        return response.choices[0].text.strip()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return "Unable to list relevant symptoms at the moment."
+
 def main():
     print("How do you feel today? You can say things like 'my stomach hurts' or 'I feel sad'.")
     user_input = input().strip().lower()
 
-    conversation_symptoms = []  # To store symptoms that have been discussed
-    asked_symptoms = set()  # Track symptoms that have been inquired about
-    asked_questions = set()  # Track specific questions that have been asked
-
+    conversation_symptoms = []
+    asked_symptoms = set()
+    asked_questions = {}
+    user_concerns = []
 
     while user_input.lower() not in ['exit', 'quit', 'no', 'nothing', 'none', 'stop', 'bye', 'goodbye', "that's all", "that's it"]:
-        top_symptoms = getSymptomList(user_input, top_n=5, threshold=0.2)  # Use updated getSymptomList function
+        top_symptoms = getSymptomList(user_input, top_n=5, threshold=0.05)
 
-        # Filter out symptoms that have already been asked about
         symptoms_to_ask = [symptom for symptom in top_symptoms if symptom not in asked_symptoms]
 
         if symptoms_to_ask:
             for symptom in symptoms_to_ask:
-                # Generate and ask a clarifying question for each new symptom
                 question = generate_clarifying_questions([symptom], user_input, asked_questions)
-                if question:  # Ensure the question is new and was not previously asked
+                if question:
                     print(question)
                     user_response = input().strip().lower()
                     if user_response.lower() in ['yes', 'yep', 'yeah', 'right', 'correct', 'true', 'details']:
                         conversation_symptoms.append(symptom)
-                    asked_symptoms.add(symptom)
+                        user_concerns.append(user_input)
+                        asked_symptoms.add(symptom)  # Move this line here
         else:
             print("I'm having a bit of trouble understanding. Can you describe it differently?")
+            user_concerns.append(user_input)
 
         print("Is there anything else you want to tell me?")
         user_input = input().strip().lower()
 
-    if conversation_symptoms:
-        unique_symptoms = set(conversation_symptoms)  # Remove duplicates
-        print("Based on our conversation, these symptoms might be relevant to you:")
-        print(", ".join(unique_symptoms))
-    else:
-        print("Okay, if you ever want to talk, I'm here.")
+    unique_symptoms = set(conversation_symptoms)
+    all_relevant_symptoms = set()
+
+    for input_text in user_concerns:
+        symptoms = getSymptomList(input_text, top_n=5, threshold=0.05)
+        all_relevant_symptoms.update(symptoms)
+
+    all_symptoms = unique_symptoms.union(all_relevant_symptoms)
+
+    print("Based on our conversation, these symptoms might be relevant to you:")
+    print(", ".join(all_symptoms))
+    print("\nHere are all the concerns you mentioned:")
+    for concern in user_concerns:
+        print("-", concern)
+    
+    print("\nSummary of your concerns:")
+    summary = generate_summary(user_concerns)
+    print(summary)
 
 if __name__ == "__main__":
     main()

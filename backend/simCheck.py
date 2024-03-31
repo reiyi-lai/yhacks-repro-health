@@ -59,7 +59,7 @@ model = SentenceTransformer('all-MiniLM-L6-v2')
 symptomEmbedding = model.encode(symptoms_list, convert_to_tensor=True)
 iknow = iknowpy.iKnowEngine()
 
-def getSymptomList(userInput, top_n=2, threshold = 0.2):
+def getSymptomList(userInput, top_n=2, threshold=0.05):
     stemmer = PorterStemmer()
     iknow.index(userInput, "en")
     paragraph = []
@@ -72,6 +72,8 @@ def getSymptomList(userInput, top_n=2, threshold = 0.2):
     words = [stemmer.stem(word) for word in paragraph]
     userSentence = ' '.join(words)
 
+    userSentence = ' '.join(paragraph)
+
     patientResponse = [userSentence]
     patientEmbedding = model.encode(patientResponse, convert_to_tensor=True)
     cosine_scores = util.cos_sim(patientEmbedding, symptomEmbedding)
@@ -81,4 +83,15 @@ def getSymptomList(userInput, top_n=2, threshold = 0.2):
 
     # Select top N symptoms based on similarity
     top_symptoms = [symptom for symptom, score in ranked_symptoms[:top_n]]
-    return top_symptoms
+
+    # Map identified symptoms to their main symptoms (remove qualifiers)
+    mapped_symptoms = []
+    for symptom in top_symptoms:
+        for main_symptom, qualifiers_list in qualifiers.items():
+            if symptom in qualifiers_list:
+                mapped_symptoms.append(main_symptom)
+                break
+        else:
+            mapped_symptoms.append(symptom)  # If no qualifier found, use the symptom as is
+
+    return mapped_symptoms

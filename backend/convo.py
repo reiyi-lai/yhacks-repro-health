@@ -134,10 +134,8 @@ def main():
     all_symptoms = unique_symptoms.union(all_relevant_symptoms)
 
     print("Based on our conversation, these symptoms might be relevant to you:")
-    #print(", ".join(all_symptoms))
-    print("blisters on the mouth, yellow vaginal discharge, foul smelling vaginal discharge, ")
+    print(", ".join(all_symptoms))
     print("\nHere are all the concerns you mentioned:")
-    user_concerns.extend(["fluid-filled bumps", "painful bumps", "yellowish discharge", "fishy smelling discharge"])
     for concern in user_concerns:
        print("-", concern)
 

@@ -9,7 +9,7 @@ qualifiers = {
     "vaginal bleeding": ["abnormal vaginal bleeding", "irregular menstrual bleeding", "irregular periods"],
     "blisters on the genitals": ["genital sores", "genital lesions", "fluid-filled bumps on the genitals"],
     "blisters on the rectum": ["rectal sores", "rectal lesions", "fluid-filled bumps around the anus"],
-    "blisters on the mouth": ["oral sores", "canker sores", "cold sores", "fluid-filled bumps in the mouth"],
+    "blisters on the mouth": ["oral sores", "canker sores", "cold sores", "fluid-filled bumps"],
     "mouth ulcers": ["oral sores on the inside", "mouth bumps on the inside"],
     "frequent urination": ["urinating often", "increased urination frequency", "peeing alot"],
     "lower back pain": ["pain in the lumbar region", "discomfort in the lower back"],
@@ -26,11 +26,10 @@ qualifiers = {
     "thick vaginal discharge": ["viscous vaginal discharge", "dense vaginal secretions"],
     "foul smelling vaginal discharge": ["malodorous vaginal discharge", "foul-smelling secretions", "bad smelling discharge", "fishy-odor", "fishy", "foul smell"],
     "burning sensation in peeing": ["painful urination", "discomfort while urinating"],
-    "anal itching": ["itchiness around the anus", "rectal itching"],
+    "anal itching": ["itchiness around the anus", "rectal itching","burning", "burns when pee", "hurns when peeing"],
     "bloody urine": ["blood in urine", "hematuria"],
     "lower abdomen pressure": ["feeling of pressure in the lower abdomen", "abdominal heaviness"],
     "lower abdomen cramping": ["abdominal cramps", "stomach discomfort"],
-    "burning sensation when peeing": ["burning", "burns when pee", "hurns when peeing"]
 }
 
 

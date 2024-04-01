@@ -1,32 +1,77 @@
-import axios from "axios";
-import React, { useState } from 'react';
-import Sidebar from './components/SideBar.js';
-import ChatBubble from './components/ChatBubbles.js';
-import ChatInputBar from './components/ChatInputBar.js';
-import { fetchAPI } from './services/api';
+import React from "react";
+import axios from 'axios';
+import Sidebar from './components/SideBar'; 
+import ChatBubble from './components/ChatBubbles';  
+import ChatInputBar from './components/ChatInputBar';  
 
-function ChatApp() {
-  const [messages, setMessages] = useState([]);
+class ChatInterface extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            messages: [],  
+            userInput: "",  // Current user input
+            step: 'greeting',  // Track the conversation step: 'greeting', 'clarifying', 'symptoms'
+        }
+    }
 
-  const handleNewMessage = (message) => {
-    // Handle sending message logic here (e.g., sending message to chat server)
-    setMessages([...messages, { text: message, isBot: false }]);
-  };
+    componentDidMount() {
+      console.log('Component did mount called');
+      axios.get('http://127.0.0.1:5001/initial_greeting').then(response => {
+        const greeting = response.data.greeting;
+        this.setState({
+          messages: [{ text: greeting, sender: 'bot' }],
+          step: 'clarifying',
+        });
+      }).catch(error => {
+        console.log(error);
+      });
+    }
 
-  return (
-    <div className="app-container">
-      <Sidebar />
-      <div className="chat-container">
-        <div className="chat-view">
-          <ChatBubble text="Hi! How are you feeling today?" isBot={true} />
-          {messages.map((message, index) => (
-          <ChatBubble key={index} text={message.text} isBot={message.isBot} />
-        ))}
-        </div>
-        <ChatInputBar onSubmit={handleNewMessage} /> 
-      </div>
-    </div>
-  );
+    handleUserInput = (input) => {
+        this.setState({ userInput: input });
+    }
+
+    fetchChatResponse = () => {
+      const { userInput, step } = this.state;
+      let endpoint = '';
+    
+      if (step === 'clarifying') {
+        endpoint = 'http://127.0.0.1:5001/generate_clarifying_questions';
+      } else if (step === 'symptoms') {
+        endpoint = 'http://127.0.0.1:5001/list_relevant_symptoms';
+      }
+    
+      axios.post(endpoint, { user_input: userInput }).then(response => {
+        const newMessage = step === 'clarifying' ? response.data.question : response.data.symptoms;
+        this.setState({
+          messages: [...this.state.messages, {text: userInput, sender: 'user'}, {text: newMessage, sender: 'bot'}],
+          userInput: "",
+          step: step === 'clarifying' ? 'symptoms' : 'done',
+        });
+      }).catch(error => console.log(error));
+    }
+
+    render() {
+        const { messages, userInput } = this.state;
+        return (
+            <div className="app-container">
+                <Sidebar />
+                <div className="chat-container">
+                    <div className="chat-view">
+                        {messages.map((message, index) => (
+                            <ChatBubble key={index} text={message.text} isBot={message.sender !== 'user'} />
+                        ))}
+                    </div>
+                    <ChatInputBar
+  userInput={userInput}
+  onChange={(e) => this.handleUserInput(e.target.value)} 
+  onSubmit={this.fetchChatResponse}
+/>
+                                  </div>
+            </div>
+        );
+    }
 }
 
-export default ChatApp;
+export default ChatInterface;
+

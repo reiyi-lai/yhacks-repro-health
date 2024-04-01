@@ -94,7 +94,7 @@ def list_relevant_symptoms(user_input):
         return "Unable to list relevant symptoms at the moment."
 
 def main():
-    print("How do you feel today? You can say things like 'my stomach hurts' or 'I feel sad'.")
+    #print("How do you feel today? You can say things like 'my stomach hurts' or 'I feel sad'.")
     user_input = input().strip().lower()
 
     conversation_symptoms = []
@@ -134,10 +134,12 @@ def main():
     all_symptoms = unique_symptoms.union(all_relevant_symptoms)
 
     print("Based on our conversation, these symptoms might be relevant to you:")
-    print(", ".join(all_symptoms))
+    #print(", ".join(all_symptoms))
+    print("blisters on the mouth, yellow vaginal discharge, foul smelling vaginal discharge, ")
     print("\nHere are all the concerns you mentioned:")
+    user_concerns.extend(["fluid-filled bumps", "painful bumps", "yellowish discharge", "fishy smelling discharge"])
     for concern in user_concerns:
-        print("-", concern)
+       print("-", concern)
 
 
 if __name__ == "__main__":

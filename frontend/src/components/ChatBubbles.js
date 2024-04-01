@@ -1,12 +1,13 @@
+// ChatBubble.js
 import React from 'react';
-// import './ChatBubbles.css';
 
-const ChatBubbles = ({ text, isBot }) => {
-    return (
-      <div className={`chat-bubble ${isBot ? 'bot' : 'user'}`}>
-        {text}
-      </div>
-    );
-  };
-  
-  export default ChatBubbles;
+const ChatBubble = ({ text, isBot }) => {
+  const bubbleClass = isBot ? "chat-bubble bot" : "chat-bubble user";
+  return (
+    <div className={bubbleClass}>
+      {text}
+    </div>
+  );
+};
+
+export default ChatBubble;

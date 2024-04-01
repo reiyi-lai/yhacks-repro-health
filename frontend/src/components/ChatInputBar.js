@@ -1,35 +1,23 @@
-// ChatInputBar.js
-import React, { useState } from 'react';
-import sendicon from './assets/send-icon.png'
+import React from 'react';
+import sendicon from './assets/send-icon.png'; 
 
-const ChatInputBar = ({ onSubmit }) => {
-  const [message, setMessage] = useState('');
-
-  const handleChange = (event) => {
-    setMessage(event.target.value);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (message.trim() !== '') {
-      onSubmit(message); // Call the onSubmit function with the message
-      setMessage(''); // Clear the input field after submission
-    }
-  };
+const ChatInputBar = ({ userInput, onChange, onSubmit }) => {
 
   return (
-    <form className="chat-input-bar" onSubmit={handleSubmit}>
+    <form className="chat-input-bar" onSubmit={(event) => {
+      event.preventDefault();
+      onSubmit();
+    }}>
       <input
         type="text"
         placeholder="Type your message..."
-        value={message}
-        onChange={handleChange}
+        value={userInput}
+        onChange={onChange}
       />
       <button type="submit">
-        <img src={sendicon} alt='send'/>
+        <img src={sendicon} alt='Send'/>
       </button>
     </form>
   );
 };
-
 export default ChatInputBar;

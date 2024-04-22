@@ -1,5 +1,7 @@
 # yhacks-repro-health
 
+<img width="1440" alt="Screenshot 2024-04-22 at 5 57 27 PM" src="https://github.com/reiyi-lai/yhacks-repro-health/assets/83943128/8e720174-58e6-4314-82f6-ab2901e1bb93">
+
 Inspiration
 
 The idea for ReproBot Health Companion Bot emerged from noticing the difficulty individuals, especially non-native speakers, have when describing their health concerns to their healthcare providers. A mismatch between an individual's "casual" description of the symptoms and the medical community's "formal" terminology leads to misdiagnosis and often fatal complications. With ReproBot, we wanted to bridge the gap, make healthcare more accessible, and reduce the anxiety around seeking help for health issues by creating an AI chatbot that interprets descriptions in everyday language to provide precise medical information for the healthcare provider.
